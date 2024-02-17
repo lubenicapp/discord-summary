@@ -18,7 +18,7 @@ async def on_message(message):
         return
 
     if message.content == 'TLDR':
-        messages = [message async for message in message.channel.history(limit=200)][::-1]
+        messages = [message async for message in message.channel.history(limit=200)]
 
         filtered_messages = []
         for m in messages:
@@ -28,9 +28,10 @@ async def on_message(message):
                 continue
             filtered_messages.append(m)
 
-        messages = filtered_messages
-        if len(messages) == 0:
+        messages = filtered_messages[::-1]
+        if len(messages) < 10:
             await message.channel.send(TLDR_TOO_RECENT)
+            return
 
         prompt = "\n".join([f"{message.author.display_name}: {message.content}" for message in messages])
         await message.channel.send(tldr(prompt).replace('\\n', '\n'))
