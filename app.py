@@ -12,20 +12,15 @@ TLDR_TOO_RECENT = "J'ai déjà fait un résumé récemment !"
 
 @client.event
 async def on_message(message):
+    print(client.user.id, message.author.id)
+
     if message.author.bot:
         return
-
-    if not message.author.bot and not message.content == 'TLDR':
-        store.store({"created_at": message.created_at, "content": message.content, "author": message.author})
 
     if message.content == 'TLDR':
         messages = [message async for message in message.channel.history(limit=200)][::-1]
 
-        if any(m.content != TLDR_TOO_RECENT and client.user.id == m.author.id for m in messages):
-            await message.channel.send(TLDR_TOO_RECENT)
-            return
-
-        messages = [m for m in messages if m.author.bot is False]
+        messages = [m for m in messages if m.author.id != client.user.id]
 
         prompt = "\n".join([f"{message.author.display_name}: {message.content}" for message in messages])
         await message.channel.send(tldr(prompt).replace('\\n', '\n'))
