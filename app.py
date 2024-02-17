@@ -20,7 +20,17 @@ async def on_message(message):
     if message.content == 'TLDR':
         messages = [message async for message in message.channel.history(limit=200)][::-1]
 
-        messages = [m for m in messages if m.author.id != client.user.id]
+        filtered_messages = []
+        for m in messages:
+            if m.author.id == client.user.id and m.content != TLDR_TOO_RECENT:
+                break
+            if m.author.id == client.user.id:
+                continue
+            filtered_messages.append(m)
+
+        messages = filtered_messages
+        if len(messages) == 0:
+            await message.channel.send(TLDR_TOO_RECENT)
 
         prompt = "\n".join([f"{message.author.display_name}: {message.content}" for message in messages])
         await message.channel.send(tldr(prompt).replace('\\n', '\n'))
