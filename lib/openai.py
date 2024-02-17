@@ -20,4 +20,5 @@ def tldr(content):
         model=MODEL,
         messages=[*messages, prompt]
     )
+
     return completion.choices[0].message.content

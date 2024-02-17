@@ -21,7 +21,7 @@ async def on_message(message):
     if message.content == 'TLDR':
         messages = [message async for message in message.channel.history(limit=200)][::-1]
 
-        if any(m.author.bot and m.content != TLDR_TOO_RECENT for m in messages):
+        if any(m.content != TLDR_TOO_RECENT and client.user.id == m.author.id for m in messages):
             await message.channel.send(TLDR_TOO_RECENT)
             return
 
