@@ -18,7 +18,7 @@ async def on_message(message):
         return
 
     if message.content == 'TLDR':
-        messages = [message async for message in message.channel.history(limit=200)]
+        messages = [message async for message in message.channel.history(limit=500)]
 
         filtered_messages = []
         for m in messages:
